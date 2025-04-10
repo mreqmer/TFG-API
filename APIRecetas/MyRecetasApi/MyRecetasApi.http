@@ -1,0 +1,6 @@
+@MyRecetasApi_HostAddress = http://localhost:5062
+
+GET {{MyRecetasApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
