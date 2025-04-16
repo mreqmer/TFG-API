@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MyRecetasApi.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class RecetasController : Controller
     {
         // GET: api/<Recetas>
@@ -35,7 +37,7 @@ namespace MyRecetasApi.Controllers
             }
         }
 
-        // GET: api/Recetas/{idReceta}
+        // GET: api/<Recetas>/{idReceta}
         [HttpGet("{idReceta}")]
         public IActionResult GetRecetaById(int idReceta)
         {
@@ -78,7 +80,7 @@ namespace MyRecetasApi.Controllers
         }
 
 
-        // GET: api/Recetas/nombre/{NombreReceta}
+        // GET: api/<Recetas>/nombre/{NombreReceta}
         [HttpGet("nombre/{NombreReceta}")]
         public IActionResult GetRecetaByName(string NombreReceta)
         {

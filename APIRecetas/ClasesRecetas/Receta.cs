@@ -16,6 +16,7 @@ namespace ClasesRecetas
         private int? tiempoPreparacion;
         private string dificultad;
         private DateTime fechaCreacion;
+        private int idCreador;
         #endregion
 
         #region Propiedades
@@ -54,9 +55,14 @@ namespace ClasesRecetas
             get { return fechaCreacion; }
             set { fechaCreacion = value; }
         }
+        public int IdCreador
+        {
+            get { return idCreador; }
+            set { idCreador = value; }
+        }
         #endregion
 
-        #region Constructores
+            #region Constructores
         public Receta()
         {
         }
