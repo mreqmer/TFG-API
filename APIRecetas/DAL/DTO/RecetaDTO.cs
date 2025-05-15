@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DAL.Models
 {
-    public class RecetaDTO : Receta
+    public class RecetaDTO : RecetaUsuario
     {
         #region Atributos
         private List<PasoRecetaDTO> pasos;

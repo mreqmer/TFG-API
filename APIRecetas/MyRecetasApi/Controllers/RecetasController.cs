@@ -9,7 +9,7 @@ namespace MyRecetasApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class RecetasController : Controller
+    public class RecetasController : ControllerBase
     {
         // GET: api/<Recetas>
         [HttpGet]
@@ -17,21 +17,17 @@ namespace MyRecetasApi.Controllers
         {
             try
             {
-                // Intentamos obtener el listado de recetas
-                List<Receta> listadoRecetas = ManejadoraRecetas.ObtieneListadoRecetas();
+                List<RecetaUsuario> listadoRecetas = ManejadoraRecetas.ObtieneListadoRecetas();
 
-                // Si no encontramos recetas, retornamos un error 404
                 if (listadoRecetas == null || !listadoRecetas.Any())
                 {
                     return NotFound(new { message = "No se encontraron recetas." });
                 }
 
-                // Si todo va bien, retornamos el listado con un 200 OK
                 return Ok(listadoRecetas);
             }
             catch (Exception ex)
             {
-                // Si ocurre una excepción, retornamos un error 500
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     new { message = "Hubo un error al obtener las recetas.", error = ex.Message });
             }
@@ -43,16 +39,13 @@ namespace MyRecetasApi.Controllers
         {
             try
             {
-                // Intentamos obtener la receta por ID
                 RecetaDTO receta = ManejadoraRecetas.ObtieneRecetaID(idReceta);
 
-                // Si no encontramos la receta, retornamos un error 404
                 if (receta == null)
                 {
                     return NotFound(new { message = $"No se encontró la receta con ID {idReceta}." });
                 }
 
-                // Esto sirve únicamente para que se ordene el objeto en el json
                 var response = new
                 {
                     receta = new
@@ -62,7 +55,9 @@ namespace MyRecetasApi.Controllers
                         receta.Descripcion,
                         receta.TiempoPreparacion,
                         receta.Dificultad,
-                        receta.FechaCreacion
+                        receta.FechaCreacion,
+                        receta.FotoReceta,
+                        receta.NombreUsuario
                     },
                     pasos = receta.Pasos,
                     ingredientes = receta.Ingredientes,
@@ -73,12 +68,44 @@ namespace MyRecetasApi.Controllers
             }
             catch (Exception ex)
             {
-                // Si ocurre una excepción, retornamos un error 500
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     new { message = "Hubo un error al obtener la receta.", error = ex.Message });
             }
         }
 
+        // GET: api/<Recetas>/creador/{idCreador}
+        [HttpGet("creador/{idCreador}")]
+        public IActionResult GetRecetasByCreador(int idCreador)
+        {
+            try
+            {
+                List<RecetaUsuario> recetas = ManejadoraRecetas.ObtieneRecetasPorIdCreador(idCreador);
+
+                if (recetas == null || !recetas.Any())
+                {
+                    return NotFound(new { message = $"No se encontraron recetas para el creador con ID {idCreador}." });
+                }
+
+                var response = recetas.Select(receta => new
+                {
+                    receta.IdReceta,
+                    receta.NombreReceta,
+                    receta.Descripcion,
+                    receta.TiempoPreparacion,
+                    receta.Dificultad,
+                    receta.FechaCreacion,
+                    receta.FotoReceta,
+                    receta.NombreUsuario
+                }).ToList();
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { message = "Hubo un error al obtener las recetas por IdCreador.", error = ex.Message });
+            }
+        }
 
         // GET: api/<Recetas>/nombre/{NombreReceta}
         [HttpGet("nombre/{NombreReceta}")]
@@ -86,16 +113,13 @@ namespace MyRecetasApi.Controllers
         {
             try
             {
-                // Intentamos obtener la receta por nombre
                 RecetaDTO receta = ManejadoraRecetas.ObtieneRecetaNombre(NombreReceta);
 
-                // Si no encontramos la receta, retornamos un error 404
                 if (receta == null)
                 {
                     return NotFound(new { message = "No se encontró la receta." });
                 }
 
-                // Esto sirve únicamente para ordenar el objeto
                 var response = new
                 {
                     receta = new
@@ -105,7 +129,9 @@ namespace MyRecetasApi.Controllers
                         receta.Descripcion,
                         receta.TiempoPreparacion,
                         receta.Dificultad,
-                        receta.FechaCreacion
+                        receta.FechaCreacion,
+                        receta.FotoReceta,
+                        receta.NombreUsuario
                     },
                     pasos = receta.Pasos,
                     ingredientes = receta.Ingredientes,
@@ -116,14 +142,47 @@ namespace MyRecetasApi.Controllers
             }
             catch (Exception ex)
             {
-                // Si ocurre una excepción, retornamos un error 500
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     new { message = "Hubo un error al obtener la receta.", error = ex.Message });
             }
         }
 
+        [HttpPost("add")]
+        public IActionResult AddReceta([FromBody] DTONuevaReceta receta)
+        {
+            try
+            {
+                // Insertar receta completa
+                DTONuevaReceta recetaInsertada = ManejadoraRecetas.InsertaRecetaCompleta(receta);
 
+                // Devolver la receta insertada
+                return Ok(new
+                {
+                    receta = new
+                    {
+                        recetaInsertada.IdReceta,
+                        recetaInsertada.NombreReceta,
+                        recetaInsertada.Descripcion,
+                        recetaInsertada.TiempoPreparacion,
+                        recetaInsertada.Dificultad,
+                        recetaInsertada.FechaCreacion,
+                        recetaInsertada.FotoReceta,
+                        recetaInsertada.IdCreador,
+                        pasos = recetaInsertada.Pasos,
+                        ingredientes = recetaInsertada.Ingredientes,
+                        categorias = recetaInsertada.Categorias
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { message = "Hubo un error al insertar la receta.", error = ex.Message });
+            }
+        }
 
 
     }
+
+
 }

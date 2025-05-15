@@ -7,7 +7,7 @@ namespace MyRecetasApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class IngredientesController : Controller
+    public class IngredientesController : ControllerBase
     {
         // Ingredientes/Categoria
         //Solo get, no va a crear el usuario cosas
@@ -58,6 +58,28 @@ namespace MyRecetasApi.Controllers
             catch (Exception ex)
             {
                 // Si ocurre una excepción, retornamos un error 500
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { message = "Hubo un error al obtener los ingredientes.", error = ex.Message });
+            }
+        }
+
+        // GET: api/<Ingredientes>/Buscar
+        [HttpGet("Buscar")]
+        public IActionResult BuscarIngredientes([FromQuery] string busquedaNombre)
+        {
+            try
+            {  
+                List<Ingrediente> ingredientes = ManejadoraIngredientes.ObtieneIngredienteBuscador(busquedaNombre);
+
+                if (ingredientes == null || !ingredientes.Any())
+                {
+                    return NotFound(new { message = "No se encontraron ingredientes." });
+                }
+
+                return Ok(ingredientes);
+            }
+            catch (Exception ex)
+            {
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     new { message = "Hubo un error al obtener los ingredientes.", error = ex.Message });
             }

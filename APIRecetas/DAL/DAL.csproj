@@ -14,4 +14,8 @@
     <ProjectReference Include="..\ClasesRecetas\ClasesRecetas.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DTO\DTOInsert\" />
+  </ItemGroup>
+
 </Project>

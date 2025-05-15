@@ -6,7 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace DAL.DTO
-{public class CategoriaRecetaDTO
+{
+    public class CategoriaRecetaDTO
     {
     #region Atributos
     private int idCategoria;

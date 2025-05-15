@@ -6,22 +6,15 @@ using System.Threading.Tasks;
 
 namespace ClasesRecetas
 {
-    public class Usuario
+    public class UsuarioInsert
     {
         #region Atributos
-        private int idUsuario;
         private string firebaseUID;
         private string nombreUsuario;
         private string correoElectronico;
-        private DateTime fechaRegistro;
         #endregion
 
         #region Propiedades
-        public int IdUsuario
-        {
-            get { return idUsuario; }
-            set { idUsuario = value; }
-        }
 
         public string FirebaseUID
         {
@@ -41,23 +34,16 @@ namespace ClasesRecetas
             set { correoElectronico = value; }
         }
 
-        public DateTime FechaRegistro
-        {
-            get { return fechaRegistro; }
-            set { fechaRegistro = value; }
-        }
         #endregion
 
         #region Constructores
-        public Usuario() { }
+        public UsuarioInsert() { }
 
-        public Usuario(int idUsuario, string firebaseUID, string nombreUsuario, string correoElectronico, DateTime fechaRegistro)
+        public UsuarioInsert(string firebaseUID, string nombreUsuario, string correoElectronico)
         {
-            IdUsuario = idUsuario;
             FirebaseUID = firebaseUID;
             NombreUsuario = nombreUsuario;
             CorreoElectronico = correoElectronico;
-            FechaRegistro = fechaRegistro;
         }
         #endregion
     }

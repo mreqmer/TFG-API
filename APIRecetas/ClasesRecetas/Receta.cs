@@ -17,6 +17,7 @@ namespace ClasesRecetas
         private string dificultad;
         private DateTime fechaCreacion;
         private int idCreador;
+        private string fotoReceta;
         #endregion
 
         #region Propiedades
@@ -60,14 +61,19 @@ namespace ClasesRecetas
             get { return idCreador; }
             set { idCreador = value; }
         }
+        public string FotoReceta
+        {
+            get { return fotoReceta; }
+            set { fotoReceta = value; }
+        }
         #endregion
 
-            #region Constructores
+        #region Constructores
         public Receta()
         {
         }
 
-        public Receta(int idReceta, string nombreReceta, string descripcion, int? tiempoPreparacion, string dificultad, DateTime fechaCreacion)
+        public Receta(int idReceta, string nombreReceta, string descripcion, int? tiempoPreparacion, string dificultad, DateTime fechaCreacion, string fotoReceta)
         {
             this.idReceta = idReceta;
             this.nombreReceta = nombreReceta;
@@ -75,6 +81,7 @@ namespace ClasesRecetas
             this.tiempoPreparacion = tiempoPreparacion;
             this.dificultad = dificultad;
             this.fechaCreacion = fechaCreacion;
+            this.fotoReceta = fotoReceta;
         }
         #endregion
     }
