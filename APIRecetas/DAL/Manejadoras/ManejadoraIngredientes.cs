@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL
+namespace DAL.Manejadoras
 {
     public class ManejadoraIngredientes
     {
@@ -35,7 +35,7 @@ namespace DAL
                         oIngrediente.Categoria = (string)miLector["Categoria"];
                         oIngrediente.Medida = (string)miLector["Medida"];
                         listadoIngredientes.Add(oIngrediente);
-                    } 
+                    }
                 }
                 miLector.Close();
                 miConexion.Close();
@@ -45,7 +45,7 @@ namespace DAL
             {
                 throw new Exception("Error al obtener el listado de ingredientes", ex);
             }
-            
+
 
             return listadoIngredientes;
         }
@@ -55,7 +55,7 @@ namespace DAL
             SqlConnection miConexion = new SqlConnection();
             SqlCommand miComando = new SqlCommand();
             SqlDataReader miLector;
-            miConexion.ConnectionString = Conexion.CadenaConexion(); 
+            miConexion.ConnectionString = Conexion.CadenaConexion();
             List<Ingrediente> listadoIngredientes = new List<Ingrediente>();
 
             try
@@ -171,8 +171,8 @@ namespace DAL
 
             return oIngrediente;
         }
-       
-       
+
+
         #endregion
 
         //public static List<Ingrediente> ObtieneListadoCategorias()

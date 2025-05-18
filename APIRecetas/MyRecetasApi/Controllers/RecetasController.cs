@@ -1,8 +1,10 @@
 ﻿using ClasesRecetas;
-using DAL;
 using DAL.DTO;
+using DAL.Manejadoras;
 using DAL.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using MyRecetasApi.Models;
 
 
 namespace MyRecetasApi.Controllers
@@ -20,6 +22,28 @@ namespace MyRecetasApi.Controllers
                 List<RecetaUsuario> listadoRecetas = ManejadoraRecetas.ObtieneListadoRecetas();
 
                 if (listadoRecetas == null || !listadoRecetas.Any())
+                {
+                    return NotFound(new { message = "No se encontraron recetas." });
+                }
+
+                return Ok(listadoRecetas);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { message = "Hubo un error al obtener las recetas.", error = ex.Message });
+            }
+        }
+
+        // GET: api/<Recetas>/RecetasLikes/uid
+        [HttpGet ("RecetasLikes/{uid}")]
+        public IActionResult GetRecetasUsuarioLikes(string uid)
+        {
+            try
+            {
+                List<RecetaUsuarioLike> listadoRecetas = ManejadoraRecetas.ObtieneListadoRecetasConLike(uid);
+
+                if (listadoRecetas == null || listadoRecetas.Count == 0)
                 {
                     return NotFound(new { message = "No se encontraron recetas." });
                 }
@@ -70,6 +94,48 @@ namespace MyRecetasApi.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     new { message = "Hubo un error al obtener la receta.", error = ex.Message });
+            }
+        }
+
+        [HttpPost("Favorita")]
+        public IActionResult GetRecetaDetalladaLike(DTOGetRecetaDetalladaLike model)
+        {
+            try
+            {
+                if (model.Uid.IsNullOrEmpty() || model.IdReceta <= 0)
+                {
+                    return BadRequest(new { mensaje = "Rellena los campos" });
+                }
+
+                DTORecetaDetalladaLike receta = ManejadoraRecetas.ObtieneRecetaIDFavorito(model);
+
+
+
+                if (receta.IdReceta == 0)
+                {
+                    return NotFound(new { mensaje = "No se encontró la receta" });
+                }
+
+
+                return Ok(receta);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { mensaje = "Error al obtener la receta", error = ex.Message });
+            }
+        }
+
+        [HttpGet("likes/{uid}")]
+        public ActionResult<List<RecetaUsuarioLike>> GetRecetasLikedByUser(string uid)
+        {
+            try
+            {
+                List<RecetaUsuarioLike> recetasLiked = ManejadoraRecetas.ObtieneRecetasFavoritasPorUid(uid);
+                return Ok(recetasLiked);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { mensaje = "Error al obtener las recetas liked por el usuario", detalle = ex.Message });
             }
         }
 

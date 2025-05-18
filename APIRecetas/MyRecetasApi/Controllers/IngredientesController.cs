@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ClasesRecetas;
-using DAL;
+using DAL.Manejadoras;
 
 namespace MyRecetasApi.Controllers
 {

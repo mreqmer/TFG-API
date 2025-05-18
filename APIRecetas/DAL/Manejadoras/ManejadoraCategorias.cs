@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL
+namespace DAL.Manejadoras
 {
     public class ManejadoraCategorias
     {
@@ -33,7 +33,7 @@ namespace DAL
                     {
                         oCategoria = new Categoria();
                         oCategoria.IdCategoria = (int)miLector["IdCategoria"];
-                        oCategoria.Nombre = (string)miLector["Nombre"];
+                        oCategoria.NombreCategoria = (string)miLector["Nombre"];
                         listadoCategorias.Add(oCategoria);
                     }
                 }

@@ -11,8 +11,8 @@ namespace ClasesRecetas
         #region Atributos
         private int idUsuario;
         private string firebaseUID;
-        private string nombreUsuario;
         private string correoElectronico;
+        private string nombreUsuario;  
         private DateTime fechaRegistro;
         #endregion
 
@@ -29,16 +29,16 @@ namespace ClasesRecetas
             set { firebaseUID = value; }
         }
 
-        public string NombreUsuario
-        {
-            get { return nombreUsuario; }
-            set { nombreUsuario = value; }
-        }
-
         public string CorreoElectronico
         {
             get { return correoElectronico; }
             set { correoElectronico = value; }
+        }
+
+        public string NombreUsuario 
+        {
+            get { return nombreUsuario; }
+            set { nombreUsuario = value; }
         }
 
         public DateTime FechaRegistro
@@ -51,14 +51,6 @@ namespace ClasesRecetas
         #region Constructores
         public Usuario() { }
 
-        public Usuario(int idUsuario, string firebaseUID, string nombreUsuario, string correoElectronico, DateTime fechaRegistro)
-        {
-            IdUsuario = idUsuario;
-            FirebaseUID = firebaseUID;
-            NombreUsuario = nombreUsuario;
-            CorreoElectronico = correoElectronico;
-            FechaRegistro = fechaRegistro;
-        }
         #endregion
     }
 }

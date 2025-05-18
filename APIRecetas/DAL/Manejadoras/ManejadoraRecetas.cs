@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 
-namespace DAL
+namespace DAL.Manejadoras
 {
     public class ManejadoraRecetas
     {
@@ -52,6 +52,61 @@ namespace DAL
             catch (Exception ex)
             {
                 throw new Exception("Error al obtener las recetas", ex);
+            }
+
+            return listadoRecetas;
+        }
+
+        public static List<RecetaUsuarioLike> ObtieneListadoRecetasConLike(string firebaseUID)
+        {
+            List<RecetaUsuarioLike> listadoRecetas = new List<RecetaUsuarioLike>();
+
+            try
+            {
+                using (SqlConnection miConexion = new SqlConnection(Conexion.CadenaConexion()))
+                {
+                    miConexion.Open();
+                    string query = @"
+                                SELECT r.*, u.NombreUsuario,
+                                       CASE WHEN EXISTS (
+                                           SELECT 1 FROM Likes l2
+                                           INNER JOIN Usuarios ul2 ON l2.IdUsuario = ul2.IdUsuario
+                                           WHERE l2.IdReceta = r.IdReceta AND ul2.FirebaseUID = @firebaseUID
+                                       ) THEN 1 ELSE 0 END AS TieneLike
+                                FROM Recetas r
+                                INNER JOIN Usuarios u ON r.IdCreador = u.IdUsuario";
+
+                    using (SqlCommand miComando = new SqlCommand(query, miConexion))
+                    {
+                        miComando.Parameters.AddWithValue("@firebaseUID", firebaseUID);
+
+                        using (SqlDataReader miLector = miComando.ExecuteReader())
+                        {
+                            while (miLector.Read())
+                            {
+                                RecetaUsuarioLike receta = new RecetaUsuarioLike
+                                {
+                                    IdReceta = (int)miLector["IdReceta"],
+                                    NombreReceta = (string)miLector["NombreReceta"],
+                                    Descripcion = (string)miLector["Descripcion"],
+                                    TiempoPreparacion = (int)miLector["TiempoPreparacion"],
+                                    Dificultad = (string)miLector["Dificultad"],
+                                    FechaCreacion = (DateTime)miLector["FechaCreacion"],
+                                    FotoReceta = (string)miLector["FotoReceta"],
+                                    NombreUsuario = (string)miLector["NombreUsuario"],
+                                    IdCreador = (int)miLector["IdCreador"],
+                                    TieneLike = (int)miLector["TieneLike"] == 1
+                                };
+
+                                listadoRecetas.Add(receta);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener las recetas con like", ex);
             }
 
             return listadoRecetas;
@@ -107,6 +162,61 @@ namespace DAL
             return listadoRecetas;
         }
 
+        public static List<RecetaUsuarioLike> ObtieneRecetasFavoritasPorUid(string firebaseUid)
+        {
+            List<RecetaUsuarioLike> listadoRecetas = new List<RecetaUsuarioLike>();
+
+            try
+            {
+                using (SqlConnection miConexion = new SqlConnection(Conexion.CadenaConexion()))
+                {
+                    miConexion.Open();
+
+                    string query = @"
+                SELECT r.*, u.NombreUsuario
+                FROM Recetas r
+                INNER JOIN Usuarios u ON r.IdCreador = u.IdUsuario
+                INNER JOIN Likes l ON l.IdReceta = r.IdReceta
+                INNER JOIN Usuarios ul ON l.IdUsuario = ul.IdUsuario
+                WHERE ul.FirebaseUID = @firebaseUid";
+
+                    using (SqlCommand miComando = new SqlCommand(query, miConexion))
+                    {
+                        miComando.Parameters.AddWithValue("@firebaseUid", firebaseUid);
+
+                        using (SqlDataReader miLector = miComando.ExecuteReader())
+                        {
+                            while (miLector.Read())
+                            {
+                                RecetaUsuarioLike receta = new RecetaUsuarioLike
+                                {
+                                    IdReceta = (int)miLector["IdReceta"],
+                                    NombreReceta = (string)miLector["NombreReceta"],
+                                    Descripcion = (string)miLector["Descripcion"],
+                                    TiempoPreparacion = (int)miLector["TiempoPreparacion"],
+                                    Dificultad = (string)miLector["Dificultad"],
+                                    FechaCreacion = (DateTime)miLector["FechaCreacion"],
+                                    FotoReceta = (string)miLector["FotoReceta"],
+                                    NombreUsuario = (string)miLector["NombreUsuario"],
+                                    IdCreador = (int)miLector["IdCreador"],
+                                    TieneLike = true
+                                };
+
+                                listadoRecetas.Add(receta);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener las recetas favoritas del usuario por UID", ex);
+            }
+
+            return listadoRecetas;
+        }
+
+
         #endregion
 
         #region Objetos
@@ -160,6 +270,62 @@ namespace DAL
             return oReceta;
         }
 
+        public static DTORecetaDetalladaLike ObtieneRecetaIDFavorito(DTOGetRecetaDetalladaLike model)
+        {
+            DTORecetaDetalladaLike oReceta = new DTORecetaDetalladaLike();
+            try
+            {
+                using (SqlConnection miConexion = new SqlConnection(Conexion.CadenaConexion()))
+                {
+                    miConexion.Open();
+                    string query = @"
+                        SELECT  r.*,  u.NombreUsuario,
+                            CASE 
+                                WHEN l.IdLike IS NOT NULL THEN 1 
+                                ELSE 0 
+                            END AS TieneLike
+                        FROM Recetas r 
+                        INNER JOIN Usuarios u ON r.IdCreador = u.IdUsuario 
+                        LEFT JOIN Likes l ON l.IdReceta = r.IdReceta 
+                        AND l.IdUsuario = (SELECT IdUsuario FROM Usuarios WHERE FirebaseUID = @firebaseUID)
+                        WHERE r.IdReceta = @idReceta";
+
+                    using (SqlCommand miComando = new SqlCommand(query, miConexion))
+                    {
+                        miComando.Parameters.AddWithValue("@idReceta", model.IdReceta);
+                        miComando.Parameters.AddWithValue("@firebaseUID", model.Uid);
+
+                        using (SqlDataReader miLector = miComando.ExecuteReader())
+                        {
+                            if (miLector.HasRows)
+                            {
+                                while (miLector.Read())
+                                {
+                                    oReceta.IdReceta = (int)miLector["IdReceta"];
+                                    oReceta.NombreReceta = (string)miLector["NombreReceta"];
+                                    oReceta.Descripcion = (string)miLector["Descripcion"];
+                                    oReceta.TiempoPreparacion = (int)miLector["TiempoPreparacion"];
+                                    oReceta.Dificultad = (string)miLector["Dificultad"];
+                                    oReceta.FechaCreacion = (DateTime)miLector["FechaCreacion"];
+                                    oReceta.FotoReceta = (string)miLector["FotoReceta"];
+                                    oReceta.NombreUsuario = (string)miLector["NombreUsuario"];
+                                    oReceta.TieneLike = (int)miLector["TieneLike"] == 1;
+                                }
+                            }
+                        }
+                    }
+
+                    oReceta.Pasos = ObtienePasosReceta(model.IdReceta);
+                    oReceta.Ingredientes = ObtieneIngredientesReceta(model.IdReceta);
+                    oReceta.Categorias = ObtieneCategoriasReceta(model.IdReceta);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener la receta", ex);
+            }
+            return oReceta;
+        }
 
 
         public static RecetaDTO ObtieneRecetaNombre(string nombreReceta)

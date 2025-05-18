@@ -1,5 +1,6 @@
 ﻿using ClasesRecetas;
-using DAL;
+using DAL.DTO;
+using DAL.Manejadoras;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MyRecetasApi.Controllers
@@ -10,11 +11,11 @@ namespace MyRecetasApi.Controllers
     {
         // GET: api/Usuarios/{firebaseUID}
         [HttpGet("{firebaseUID}")]
-        public IActionResult GetUsuarioByFirebaseUID(string firebaseUID)
+        public IActionResult GetUsuarioInfoAdicional(string firebaseUID)
         {
             try
             {
-                Usuario usuario = ManejadoraUsuarios.ObtieneUsuarioPorUID(firebaseUID);
+                DTOUsuario usuario = ManejadoraUsuarios.ObtieneUsuarioSimplificadoPorUID(firebaseUID);
 
                 if (usuario == null)
                 {
@@ -36,15 +37,21 @@ namespace MyRecetasApi.Controllers
         {
             try
             {
-                // Verificar que los campos necesarios estén presentes
                 if (string.IsNullOrEmpty(usuario.FirebaseUID) || string.IsNullOrEmpty(usuario.NombreUsuario) || string.IsNullOrEmpty(usuario.CorreoElectronico))
                 {
                     return BadRequest(new { message = "Debe introducir todos los datos." });
                 }
 
-                // Insertar el nuevo usuario
-                Usuario newUser = ManejadoraUsuarios.InsertaUsuario(usuario.FirebaseUID, usuario.NombreUsuario, usuario.CorreoElectronico);
+                // Comprobar si ya existe usuario con ese FirebaseUID
+                var usuarioExistente = ManejadoraUsuarios.ObtieneUsuarioPorUID(usuario.FirebaseUID);
+                if (usuarioExistente != null)
+                {
+                    // Ya existe, devolver el usuario existente (o algún mensaje personalizado)
+                    return Ok(usuarioExistente);
+                }
 
+                // Si no existe, insertar nuevo usuario
+                Usuario newUser = ManejadoraUsuarios.InsertaUsuario(usuario);
                 return Ok(newUser);
             }
             catch (Exception ex)

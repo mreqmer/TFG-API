@@ -11,7 +11,7 @@ namespace ClasesRecetas
     {
         #region Atributos
         private int idCategoria;
-        private string nombre;
+        private string nombreCategoria;
         #endregion
 
         #region Propiedades
@@ -21,10 +21,10 @@ namespace ClasesRecetas
             set { idCategoria = value; }
         }
 
-        public string Nombre
+        public string NombreCategoria
         {
-            get { return nombre; }
-            set { nombre = value; }
+            get { return nombreCategoria; }
+            set { nombreCategoria = value; }
         }
         #endregion
 
@@ -36,7 +36,7 @@ namespace ClasesRecetas
         public Categoria(int idCategoria, string nombre)
         {
             this.idCategoria = idCategoria;
-            this.nombre = nombre;
+            this.nombreCategoria = nombre;
         }
         #endregion
     }

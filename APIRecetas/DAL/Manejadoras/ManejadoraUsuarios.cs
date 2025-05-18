@@ -1,4 +1,5 @@
 ﻿using ClasesRecetas;
+using DAL.DTO;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
@@ -6,13 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL
+namespace DAL.Manejadoras
 {
     public class ManejadoraUsuarios
     {
-        public static Usuario ObtieneUsuarioPorUID(string firebaseUID)
+        public static DTOUsuario ObtieneUsuarioSimplificadoPorUID(string firebaseUID)
         {
-            Usuario usuario = null;
+            DTOUsuario usuario = null;
 
             try
             {
@@ -27,13 +28,10 @@ namespace DAL
                         {
                             if (miLector.Read())
                             {
-                                usuario = new Usuario
+                                usuario = new DTOUsuario
                                 {
                                     IdUsuario = (int)miLector["IdUsuario"],
-                                    FirebaseUID = (string)miLector["FirebaseUID"],
-                                    NombreUsuario = (string)miLector["NombreUsuario"],
-                                    CorreoElectronico = (string)miLector["CorreoElectronico"],
-                                    FechaRegistro = (DateTime)miLector["FechaRegistro"]
+                                    FechaRegistro = (DateTime)miLector["FechaRegistro"],
                                 };
                             }
                         }
@@ -48,7 +46,7 @@ namespace DAL
             return usuario;
         }
 
-        public static Usuario InsertaUsuario(string firebaseUID, string nombreUsuario, string correoElectronico)
+        public static Usuario ObtieneUsuarioPorUID(string firebaseUID)
         {
             Usuario usuario = null;
 
@@ -59,13 +57,54 @@ namespace DAL
                     miConexion.Open();
 
                     using (SqlCommand miComando = new SqlCommand(
-                        "INSERT INTO Usuarios (FirebaseUID, NombreUsuario, CorreoElectronico, FechaRegistro) " +
-                        "OUTPUT INSERTED.IdUsuario, INSERTED.FirebaseUID, INSERTED.NombreUsuario, INSERTED.CorreoElectronico, INSERTED.FechaRegistro " +
-                        "VALUES (@FirebaseUID, @NombreUsuario, @CorreoElectronico, @FechaRegistro)", miConexion))
+                        "SELECT IdUsuario, FirebaseUID, CorreoElectronico, NombreUsuario, FechaRegistro " +
+                        "FROM Usuarios WHERE FirebaseUID = @FirebaseUID", miConexion))
                     {
                         miComando.Parameters.AddWithValue("@FirebaseUID", firebaseUID);
-                        miComando.Parameters.AddWithValue("@NombreUsuario", nombreUsuario);
-                        miComando.Parameters.AddWithValue("@CorreoElectronico", correoElectronico);
+
+                        using (SqlDataReader reader = miComando.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                usuario = new Usuario
+                                {
+                                    IdUsuario = (int)reader["IdUsuario"],
+                                    FirebaseUID = (string)reader["FirebaseUID"],
+                                    CorreoElectronico = (string)reader["CorreoElectronico"],
+                                    NombreUsuario = (string)reader["NombreUsuario"],
+                                    FechaRegistro = (DateTime)reader["FechaRegistro"]
+                                };
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener el usuario por FirebaseUID", ex);
+            }
+
+            return usuario;
+        }
+
+        public static Usuario InsertaUsuario(UsuarioInsert usuarioInsert)
+        {
+            Usuario usuario = null;
+
+            try
+            {
+                using (SqlConnection miConexion = new SqlConnection(Conexion.CadenaConexion()))
+                {
+                    miConexion.Open();
+
+                    using (SqlCommand miComando = new SqlCommand(
+                        "INSERT INTO Usuarios (FirebaseUID, CorreoElectronico, NombreUsuario, FechaRegistro) " +
+                        "OUTPUT INSERTED.IdUsuario, INSERTED.FirebaseUID, INSERTED.CorreoElectronico, INSERTED.NombreUsuario, INSERTED.FechaRegistro " +
+                        "VALUES (@FirebaseUID, @CorreoElectronico, @NombreUsuario, @FechaRegistro)", miConexion))
+                    {
+                        miComando.Parameters.AddWithValue("@FirebaseUID", usuarioInsert.FirebaseUID);
+                        miComando.Parameters.AddWithValue("@CorreoElectronico", usuarioInsert.CorreoElectronico);
+                        miComando.Parameters.AddWithValue("@NombreUsuario", usuarioInsert.NombreUsuario);
                         miComando.Parameters.AddWithValue("@FechaRegistro", DateTime.Now);
 
                         using (SqlDataReader reader = miComando.ExecuteReader())
@@ -76,8 +115,8 @@ namespace DAL
                                 {
                                     IdUsuario = (int)reader["IdUsuario"],
                                     FirebaseUID = (string)reader["FirebaseUID"],
-                                    NombreUsuario = (string)reader["NombreUsuario"],
                                     CorreoElectronico = (string)reader["CorreoElectronico"],
+                                    NombreUsuario = (string)reader["NombreUsuario"],
                                     FechaRegistro = (DateTime)reader["FechaRegistro"]
                                 };
                             }
@@ -92,6 +131,8 @@ namespace DAL
 
             return usuario;
         }
+
+
 
         public static int EliminarUsuarioPorUID(string firebaseUID)
         {

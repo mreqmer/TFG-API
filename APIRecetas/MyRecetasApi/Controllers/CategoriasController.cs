@@ -1,5 +1,5 @@
 ﻿using ClasesRecetas;
-using DAL;
+using DAL.Manejadoras;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MyRecetasApi.Controllers

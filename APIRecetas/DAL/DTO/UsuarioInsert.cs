@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClasesRecetas
+namespace DAL.DTO
 {
     public class UsuarioInsert
     {
@@ -38,13 +38,6 @@ namespace ClasesRecetas
 
         #region Constructores
         public UsuarioInsert() { }
-
-        public UsuarioInsert(string firebaseUID, string nombreUsuario, string correoElectronico)
-        {
-            FirebaseUID = firebaseUID;
-            NombreUsuario = nombreUsuario;
-            CorreoElectronico = correoElectronico;
-        }
         #endregion
     }
 }
