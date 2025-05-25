@@ -132,7 +132,34 @@ namespace DAL.Manejadoras
             return usuario;
         }
 
+        public static bool ActualizarUsuario(string firebaseUID, DTOUpdateUsuario usuarioActualizado)
+        {
+            try
+            {
+                using (SqlConnection miConexion = new SqlConnection(Conexion.CadenaConexion()))
+                {
+                    miConexion.Open();
 
+                    using (SqlCommand miComando = new SqlCommand(
+                        "UPDATE Usuarios " +
+                        "SET NombreUsuario = @NombreUsuario, CorreoElectronico = @CorreoElectronico " +
+                        "WHERE FirebaseUID = @FirebaseUID", miConexion))
+                    {
+                        miComando.Parameters.AddWithValue("@FirebaseUID", firebaseUID);
+                        miComando.Parameters.AddWithValue("@NombreUsuario", usuarioActualizado.NombreUsuario);
+                        miComando.Parameters.AddWithValue("@CorreoElectronico", usuarioActualizado.CorreoElectronico);
+
+                        int filasAfectadas = miComando.ExecuteNonQuery();
+
+                        return filasAfectadas > 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al actualizar el usuario", ex);
+            }
+        }
 
         public static int EliminarUsuarioPorUID(string firebaseUID)
         {
@@ -163,4 +190,5 @@ namespace DAL.Manejadoras
         }
 
     }
+
 }

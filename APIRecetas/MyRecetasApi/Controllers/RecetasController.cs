@@ -57,6 +57,57 @@ namespace MyRecetasApi.Controllers
             }
         }
 
+        // GET: api/<Recetas>/RecetasLikes/{uid}/{busqueda}
+        [HttpGet("RecetasLikes/Busqueda/{uid}/{busqueda}")]
+        public IActionResult GetRecetasUsuarioLikesPorNombre(string uid, string busqueda)
+        {
+            try
+            {
+                List<RecetaUsuarioLike> listadoRecetas = ManejadoraRecetas.ObtieneRecetasConLikePorNombre(uid, busqueda);
+
+                if (listadoRecetas == null || listadoRecetas.Count == 0)
+                {
+                    return NotFound(new { message = "No se encontraron recetas que coincidan con la búsqueda." });
+                }
+
+                return Ok(listadoRecetas);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { message = "Hubo un error al obtener las recetas con like por nombre.", error = ex.Message });
+            }
+        }
+
+        [HttpGet("RecetasLikes/Busqueda/{uid}")]
+        public IActionResult GetRecetasUsuarioLikesFiltrado(
+                string uid,
+                [FromQuery] string busqueda = "",
+                [FromQuery] string? categoria = null,
+                [FromQuery] int? tiempo = null,
+                [FromQuery] string? dificultad = null,
+                [FromQuery] List<string>? ingredientes = null
+        )
+        {
+            try
+            {
+
+                var listadoRecetas = ManejadoraRecetas.ObtieneRecetasConLikeFiltrado(uid, busqueda, categoria, tiempo, dificultad, ingredientes);
+
+                if (listadoRecetas == null || listadoRecetas.Count == 0)
+                {
+                    return NotFound(new { message = "No se encontraron recetas que coincidan con la búsqueda." });
+                }
+
+                return Ok(listadoRecetas);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { message = "Hubo un error al obtener las recetas con like filtradas.", error = ex.Message });
+            }
+        }
+
         // GET: api/<Recetas>/{idReceta}
         [HttpGet("{idReceta}")]
         public IActionResult GetRecetaById(int idReceta)

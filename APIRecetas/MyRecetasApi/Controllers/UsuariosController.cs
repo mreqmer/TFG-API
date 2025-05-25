@@ -61,6 +61,33 @@ namespace MyRecetasApi.Controllers
             }
         }
 
+        // PUT: api/Usuarios/Editar/{firebaseUID}
+        [HttpPut("Editar/{firebaseUID}")]
+        public IActionResult EditarUsuario(string firebaseUID, [FromBody] DTOUpdateUsuario usuarioEditado)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(usuarioEditado.NombreUsuario) || string.IsNullOrEmpty(usuarioEditado.CorreoElectronico))
+                {
+                    return BadRequest(new { message = "Debe proporcionar un nombre de usuario y un correo electrónico válidos." });
+                }
+
+                bool actualizado = ManejadoraUsuarios.ActualizarUsuario(firebaseUID, usuarioEditado);
+
+                if (!actualizado)
+                {
+                    return NotFound(new { message = "No se encontró un usuario con ese UID para actualizar." });
+                }
+
+                return Ok(new { message = "Usuario actualizado correctamente." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { message = "Error al actualizar el usuario.", error = ex.Message });
+            }
+        }
+
         // DELETE: api/Usuarios/Borrar/{firebaseUID}
         [HttpDelete("Borrar/{firebaseUID}")]
         public IActionResult DeleteUsuario(string firebaseUID)
@@ -84,4 +111,7 @@ namespace MyRecetasApi.Controllers
             }
         }
     }
+
+
+
 }
