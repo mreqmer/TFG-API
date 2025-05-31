@@ -1,5 +1,5 @@
 ﻿using ClasesRecetas;
-using DAL.DTO;
+using DAL.DTO.DTOUsuario;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
@@ -11,6 +11,12 @@ namespace DAL.Manejadoras
 {
     public class ManejadoraUsuarios
     {
+        /// <summary>
+        /// Obtiene un usuario simplificado (IdUsuario y FechaRegistro) a partir de su FirebaseUID.
+        /// </summary>
+        /// <param name="firebaseUID"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static DTOUsuario ObtieneUsuarioSimplificadoPorUID(string firebaseUID)
         {
             DTOUsuario usuario = null;
@@ -46,6 +52,12 @@ namespace DAL.Manejadoras
             return usuario;
         }
 
+        /// <summary>
+        /// Obtiene un usuario completo a partir de su FirebaseUID.
+        /// </summary>
+        /// <param name="firebaseUID"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static Usuario ObtieneUsuarioPorUID(string firebaseUID)
         {
             Usuario usuario = null;
@@ -87,6 +99,12 @@ namespace DAL.Manejadoras
             return usuario;
         }
 
+        /// <summary>
+        /// Inserta un nuevo usuario en la base de datos.
+        /// </summary>
+        /// <param name="usuarioInsert"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static Usuario InsertaUsuario(UsuarioInsert usuarioInsert)
         {
             Usuario usuario = null;
@@ -132,62 +150,34 @@ namespace DAL.Manejadoras
             return usuario;
         }
 
-        public static bool ActualizarUsuario(string firebaseUID, DTOUpdateUsuario usuarioActualizado)
-        {
-            try
-            {
-                using (SqlConnection miConexion = new SqlConnection(Conexion.CadenaConexion()))
-                {
-                    miConexion.Open();
+        //public static bool ActualizarUsuario(string firebaseUID, DTOUpdateUsuario usuarioActualizado)
+        //{
+        //    try
+        //    {
+        //        using (SqlConnection miConexion = new SqlConnection(Conexion.CadenaConexion()))
+        //        {
+        //            miConexion.Open();
 
-                    using (SqlCommand miComando = new SqlCommand(
-                        "UPDATE Usuarios " +
-                        "SET NombreUsuario = @NombreUsuario, CorreoElectronico = @CorreoElectronico " +
-                        "WHERE FirebaseUID = @FirebaseUID", miConexion))
-                    {
-                        miComando.Parameters.AddWithValue("@FirebaseUID", firebaseUID);
-                        miComando.Parameters.AddWithValue("@NombreUsuario", usuarioActualizado.NombreUsuario);
-                        miComando.Parameters.AddWithValue("@CorreoElectronico", usuarioActualizado.CorreoElectronico);
+        //            using (SqlCommand miComando = new SqlCommand(
+        //                "UPDATE Usuarios " +
+        //                "SET NombreUsuario = @NombreUsuario, CorreoElectronico = @CorreoElectronico " +
+        //                "WHERE FirebaseUID = @FirebaseUID", miConexion))
+        //            {
+        //                miComando.Parameters.AddWithValue("@FirebaseUID", firebaseUID);
+        //                miComando.Parameters.AddWithValue("@NombreUsuario", usuarioActualizado.NombreUsuario);
+        //                miComando.Parameters.AddWithValue("@CorreoElectronico", usuarioActualizado.CorreoElectronico);
 
-                        int filasAfectadas = miComando.ExecuteNonQuery();
+        //                int filasAfectadas = miComando.ExecuteNonQuery();
 
-                        return filasAfectadas > 0;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al actualizar el usuario", ex);
-            }
-        }
-
-        public static int EliminarUsuarioPorUID(string firebaseUID)
-        {
-            int filasAfectadas = 0;
-            try
-            {
-                using (SqlConnection miConexion = new SqlConnection(Conexion.CadenaConexion()))
-                {
-                    miConexion.Open();
-
-                    using (SqlCommand miComando = new SqlCommand(
-                        "DELETE FROM Usuarios WHERE FirebaseUID = @FirebaseUID", miConexion))
-                    {
-                        miComando.Parameters.AddWithValue("@FirebaseUID", firebaseUID);
-
-                        // Ejecutamos el comando y devolvemos true si se eliminó algún registro
-                        filasAfectadas = miComando.ExecuteNonQuery();
-
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al eliminar el usuario", ex);
-            }
-
-            return filasAfectadas;
-        }
+        //                return filasAfectadas > 0;
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception("Error al actualizar el usuario", ex);
+        //    }
+        //}
 
     }
 

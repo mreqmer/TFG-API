@@ -4,14 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL.DTO
+namespace DAL.DTO.DTOUsuario
 {
     public class DTOUpdateUsuario
     {
-
+        #region Atributos
         private string correoElectronico;
         private string nombreUsuario;
-
+        #endregion
+        #region Propiedades
         public string CorreoElectronico
         {
             get { return correoElectronico; }
@@ -23,10 +24,12 @@ namespace DAL.DTO
             get { return nombreUsuario; }
             set { nombreUsuario = value; }
         }
+        #endregion
 
+        #region Constructores
         public DTOUpdateUsuario()
         {
         }
-
+        #endregion
     }
 }

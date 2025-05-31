@@ -4,17 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL.DTO
+namespace DAL.DTO.DTOPasos
 {
-    public class DTOPasosRecetaSimplificado
+
+    public class PasoRecetaDTO
     {
         #region Atributos
-        private int orden;
+        private short orden;
         private string descripcion;
         #endregion
 
         #region Propiedades
-        public int Orden
+        public short Orden
         {
             get { return orden; }
             set { orden = value; }
@@ -28,9 +29,11 @@ namespace DAL.DTO
         #endregion
 
         #region Constructores
-        public DTOPasosRecetaSimplificado()
+        public PasoRecetaDTO()
         {
         }
         #endregion
     }
+
+
 }

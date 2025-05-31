@@ -1,5 +1,5 @@
 ﻿using ClasesRecetas;
-using DAL.DTO;
+using DAL.DTO.DTOReceta;
 using DAL.Manejadoras;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

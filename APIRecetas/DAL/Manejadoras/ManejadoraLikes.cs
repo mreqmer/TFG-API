@@ -1,4 +1,4 @@
-﻿using DAL.DTO;
+﻿using DAL.DTO.DTOReceta;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;

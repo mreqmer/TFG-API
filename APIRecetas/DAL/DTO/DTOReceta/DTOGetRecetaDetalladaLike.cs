@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL.DTO
+namespace DAL.DTO.DTOReceta
 {
     public class DTOGetRecetaDetalladaLike
     {
@@ -21,7 +21,7 @@ namespace DAL.DTO
             get { return uid; }
             set { uid = value; }
         }
-        
+
         public DTOGetRecetaDetalladaLike()
         {
         }

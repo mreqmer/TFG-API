@@ -1,30 +1,30 @@
-﻿using ClasesRecetas;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL.DTO
+namespace DAL.DTO.DTOReceta
 {
-    public class RecetaUsuario : Receta
+    public class DTORecetaDetalladaLike : RecetaDTO
     {
         #region Atributos
-        private string nombreUsuario;
+        private bool tieneLike;
         #endregion
+
         #region Propiedades
-        public string NombreUsuario
+        public bool TieneLike
         {
-            get { return nombreUsuario; }
-            set { nombreUsuario = value; }
+            get { return tieneLike; }
+            set { tieneLike = value; }
         }
         #endregion
+
         #region Constructores
-        public RecetaUsuario()
+        public DTORecetaDetalladaLike()
         {
         }
         #endregion
-    
-    
+
     }
 }

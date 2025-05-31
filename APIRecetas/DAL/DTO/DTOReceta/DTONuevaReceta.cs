@@ -1,22 +1,25 @@
 ﻿using ClasesRecetas;
+using DAL.DTO.DTOCategoria;
+using DAL.DTO.DTOIngrediente;
+using DAL.DTO.DTOPasos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL.DTO
+namespace DAL.DTO.DTOReceta
 {
     public class DTONuevaReceta : Receta
     {
         #region Atributos
-        private List<DTOPasosRecetaSimplificado> pasos;
+        private List<PasoRecetaDTO> pasos;
         private List<DTOIngredientesRecetaSimplificado> ingredientes;
         private List<DTOCategoriaRecetaSimplificada> categorias;
         #endregion
 
         #region Propiedades
-        public List<DTOPasosRecetaSimplificado> Pasos
+        public List<PasoRecetaDTO> Pasos
         {
             get { return pasos; }
             set { pasos = value; }
@@ -38,9 +41,6 @@ namespace DAL.DTO
         #region Constructores
         public DTONuevaReceta()
         {
-            pasos = new List<DTOPasosRecetaSimplificado>();
-            ingredientes = new List<DTOIngredientesRecetaSimplificado>();
-            categorias = new List<DTOCategoriaRecetaSimplificada>();
         }
         #endregion
     }

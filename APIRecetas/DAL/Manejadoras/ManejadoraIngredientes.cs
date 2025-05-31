@@ -1,7 +1,9 @@
 ﻿using ClasesRecetas;
+using DAL.DTO.DTOIngrediente;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -131,6 +133,44 @@ namespace DAL.Manejadoras
             }
             return listadoIngredientesCategorias;
         }
+
+        public static List<IngredienteRecetaDTO> ObtieneIngredientesReceta(int idReceta)
+        {
+            List<IngredienteRecetaDTO> ingredientesReceta = new List<IngredienteRecetaDTO>();
+            try
+            {
+                using (SqlConnection miConexion = new SqlConnection(Conexion.CadenaConexion()))
+                {
+                    miConexion.Open();
+                    using (SqlCommand miComando = new SqlCommand("ObtenerIngredientesReceta", miConexion))
+                    {
+                        miComando.CommandType = CommandType.StoredProcedure;
+                        miComando.Parameters.AddWithValue("@p_idReceta", idReceta);
+                        using (SqlDataReader miLector = miComando.ExecuteReader())
+                        {
+                            while (miLector.Read())
+                            {
+                                IngredienteRecetaDTO oIngrediente = new IngredienteRecetaDTO
+                                {
+                                    IdIngrediente = (int)miLector["idIngrediente"],
+                                    NombreIngrediente = (string)miLector["NombreIngrediente"],
+                                    Categoria = (string)miLector["Categoria"],
+                                    Medida = (string)miLector["Medida"],
+                                    Cantidad = (decimal)miLector["Cantidad"],
+                                    Notas = miLector["Notas"] as string ?? string.Empty,
+                                };
+                                ingredientesReceta.Add(oIngrediente);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener los ingredientes de la receta", ex);
+            }
+            return ingredientesReceta;
+        }
         #endregion
 
         #region objetos
@@ -175,42 +215,7 @@ namespace DAL.Manejadoras
 
         #endregion
 
-        //public static List<Ingrediente> ObtieneListadoCategorias()
-        //{
-        //    SqlConnection miConexion = new SqlConnection();
-        //    List<Ingrediente> listadoIngredientesCategorias = new List<Ingrediente>();
-        //    SqlCommand miComando = new SqlCommand();
-        //    SqlDataReader miLector;
-        //    Ingrediente oIngrediente;
-        //    miConexion.ConnectionString = Conexion.CadenaConexion();
-        //    try
-        //    {
-        //        miConexion.Open();
-        //        miComando.Parameters.AddWithValue("@categoria", categoria);
-        //        miComando.CommandText = "SELECT * FROM Ingredientes WHERE categoria = @categoria";
-        //        miComando.Connection = miConexion;
-        //        miLector = miComando.ExecuteReader();
-        //        if (miLector.HasRows)
-        //        {
-        //            oIngrediente = new Ingrediente();
-        //            oIngrediente.IdIngrediente = (int)miLector["IdIngrediente"];
-        //            oIngrediente.NombreIngrediente = (string)miLector["NombreIngrediente"];
-        //            //oIngrediente.Categoria = (string)miLector["Categoria"];
-        //            oIngrediente.Medida = (string)miLector["Medida"];
-        //            listadoIngredientesCategorias.Add(oIngrediente);
-
-
-        //        }
-        //        miLector.Close();
-        //        miConexion.Close();
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new Exception("Error al obtener el listado de ingredientes", ex);
-        //    }
-        //    return listadoIngredientesCategorias;
-        //}
+       
 
 
     }

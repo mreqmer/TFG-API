@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL.DTO
+namespace DAL.DTO.DTOCategoria
 {
     public class DTOCategoriaRecetaSimplificada
     {
-            public int IdCategoria { get; set; }
-        
+        public int IdCategoria { get; set; }
+
     }
 }

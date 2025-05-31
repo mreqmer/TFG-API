@@ -1,17 +1,25 @@
 ﻿using ClasesRecetas;
-using DAL.DTO;
-using DAL.Models;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using DAL.Manejadoras;
+using DAL.DTO.DTOReceta;
 
 namespace DAL.Manejadoras
 {
+    /// <summary>
+    /// Clase contenedora de lo métodos de conexión con la base de datos para la gestión de recetas.
+    /// </summary>
     public class ManejadoraRecetas
     {
         #region Listados
 
+        /// <summary>
+        /// Obtiene un listado de todas las recetas con sus respectivos creadores.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static List<RecetaUsuario> ObtieneListadoRecetas()
         {
             List<RecetaUsuario> listadoRecetas = new List<RecetaUsuario>();
@@ -57,6 +65,12 @@ namespace DAL.Manejadoras
             return listadoRecetas;
         }
 
+        /// <summary>
+        /// Obtiene un listado de recetas con el nombre del creador y si tiene like
+        /// </summary>
+        /// <param name="firebaseUID"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static List<RecetaUsuarioLike> ObtieneListadoRecetasConLike(string firebaseUID)
         {
             List<RecetaUsuarioLike> listadoRecetas = new List<RecetaUsuarioLike>();
@@ -112,62 +126,17 @@ namespace DAL.Manejadoras
             return listadoRecetas;
         }
 
-        public static List<RecetaUsuarioLike> ObtieneRecetasConLikePorNombre(string firebaseUID, string busqueda)
-        {
-            List<RecetaUsuarioLike> listadoRecetas = new List<RecetaUsuarioLike>();
-
-            try
-            {
-                using (SqlConnection miConexion = new SqlConnection(Conexion.CadenaConexion()))
-                {
-                    miConexion.Open();
-                    string query = @"
-                        SELECT r.*, u.NombreUsuario,
-                               CASE WHEN EXISTS (
-                                   SELECT 1 FROM Likes l2
-                                   INNER JOIN Usuarios ul2 ON l2.IdUsuario = ul2.IdUsuario
-                                   WHERE l2.IdReceta = r.IdReceta AND ul2.FirebaseUID = @firebaseUID
-                               ) THEN 1 ELSE 0 END AS TieneLike
-                        FROM Recetas r
-                        INNER JOIN Usuarios u ON r.IdCreador = u.IdUsuario
-                        WHERE LOWER(r.NombreReceta) LIKE '%' + LOWER(@busqueda) + '%'";
-
-                    using (SqlCommand miComando = new SqlCommand(query, miConexion))
-                    {
-                        miComando.Parameters.AddWithValue("@firebaseUID", firebaseUID);
-                        miComando.Parameters.AddWithValue("@busqueda", busqueda);
-
-                        using (SqlDataReader miLector = miComando.ExecuteReader())
-                        {
-                            while (miLector.Read())
-                            {
-                                RecetaUsuarioLike receta = new RecetaUsuarioLike
-                                {
-                                    IdReceta = (int)miLector["IdReceta"],
-                                    NombreReceta = (string)miLector["NombreReceta"],
-                                    Descripcion = (string)miLector["Descripcion"],
-                                    TiempoPreparacion = (int)miLector["TiempoPreparacion"],
-                                    Dificultad = (string)miLector["Dificultad"],
-                                    FechaCreacion = (DateTime)miLector["FechaCreacion"],
-                                    FotoReceta = (string)miLector["FotoReceta"],
-                                    NombreUsuario = (string)miLector["NombreUsuario"],
-                                    IdCreador = (int)miLector["IdCreador"],
-                                    TieneLike = (int)miLector["TieneLike"] == 1
-                                };
-
-                                listadoRecetas.Add(receta);
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al obtener las recetas con like por nombre", ex);
-            }
-
-            return listadoRecetas;
-        }
+        /// <summary>
+        /// Obtiene un listado de recetas con el nombre del creador y si tiene like, filtrado por parámetros opcionales.
+        /// </summary>
+        /// <param name="firebaseUID"></param>
+        /// <param name="busqueda"></param>
+        /// <param name="categoria"></param>
+        /// <param name="tiempoMaxMinutos"></param>
+        /// <param name="dificultad"></param>
+        /// <param name="ingredientes"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static List<RecetaUsuarioLike> ObtieneRecetasConLikeFiltrado(
                string firebaseUID,
                string busqueda,
@@ -268,6 +237,12 @@ namespace DAL.Manejadoras
             return listadoRecetas;
         }
 
+        /// <summary>
+        /// Obtiene un listado de recetas creadas por un usuario específico, dado su IdCreador.
+        /// </summary>
+        /// <param name="idCreador"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static List<RecetaUsuario> ObtieneRecetasPorIdCreador(int idCreador)
         {
             List<RecetaUsuario> listadoRecetas = new List<RecetaUsuario>();
@@ -318,6 +293,12 @@ namespace DAL.Manejadoras
             return listadoRecetas;
         }
 
+        /// <summary>
+        /// Obtiene un listado de recetas favoritas de un usuario, dado su Firebase UID.
+        /// </summary>
+        /// <param name="firebaseUid"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static List<RecetaUsuarioLike> ObtieneRecetasFavoritasPorUid(string firebaseUid)
         {
             List<RecetaUsuarioLike> listadoRecetas = new List<RecetaUsuarioLike>();
@@ -371,9 +352,15 @@ namespace DAL.Manejadoras
 
             return listadoRecetas;
         }
-
         #endregion
+
         #region Objetos
+        /// <summary>
+        /// Obtiene una receta por su ID, incluyendo sus pasos, ingredientes y categorías.
+        /// </summary>
+        /// <param name="idReceta"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static RecetaDTO ObtieneRecetaID(int idReceta)
         {
             RecetaDTO oReceta = new RecetaDTO();
@@ -411,9 +398,9 @@ namespace DAL.Manejadoras
                         }
                     }
 
-                    oReceta.Pasos = ObtienePasosReceta(idReceta);
-                    oReceta.Ingredientes = ObtieneIngredientesReceta(idReceta);
-                    oReceta.Categorias = ObtieneCategoriasReceta(idReceta);
+                    oReceta.Pasos = ManejadoraPasos.ObtienePasosReceta(idReceta);
+                    oReceta.Ingredientes = ManejadoraIngredientes.ObtieneIngredientesReceta(idReceta);
+                    oReceta.Categorias = ManejadoraCategorias.ObtieneCategoriasReceta(idReceta);
                 }
             }
             catch (Exception ex)
@@ -423,6 +410,12 @@ namespace DAL.Manejadoras
             return oReceta;
         }
 
+        /// <summary>
+        /// Obtiene los detalles de una receta, con la información del like
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static DTORecetaDetalladaLike ObtieneRecetaIDFavorito(DTOGetRecetaDetalladaLike model)
         {
             DTORecetaDetalladaLike oReceta = new DTORecetaDetalladaLike();
@@ -468,9 +461,9 @@ namespace DAL.Manejadoras
                         }
                     }
 
-                    oReceta.Pasos = ObtienePasosReceta(model.IdReceta);
-                    oReceta.Ingredientes = ObtieneIngredientesReceta(model.IdReceta);
-                    oReceta.Categorias = ObtieneCategoriasReceta(model.IdReceta);
+                    oReceta.Pasos = ManejadoraPasos.ObtienePasosReceta(model.IdReceta);
+                    oReceta.Ingredientes = ManejadoraIngredientes.ObtieneIngredientesReceta(model.IdReceta);
+                    oReceta.Categorias = ManejadoraCategorias.ObtieneCategoriasReceta(model.IdReceta);
                 }
             }
             catch (Exception ex)
@@ -480,6 +473,12 @@ namespace DAL.Manejadoras
             return oReceta;
         }
 
+        /// <summary>
+        /// Obtiene una receta por su nombre, incluyendo sus pasos, ingredientes y categorías.
+        /// </summary>
+        /// <param name="nombreReceta"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static RecetaDTO ObtieneRecetaNombre(string nombreReceta)
         {
             RecetaDTO oReceta = new RecetaDTO();
@@ -517,9 +516,9 @@ namespace DAL.Manejadoras
                         }
                     }
 
-                    oReceta.Pasos = ObtienePasosReceta(oReceta.IdReceta);
-                    oReceta.Ingredientes = ObtieneIngredientesReceta(oReceta.IdReceta);
-                    oReceta.Categorias = ObtieneCategoriasReceta(oReceta.IdReceta);
+                    oReceta.Pasos = ManejadoraPasos.ObtienePasosReceta(oReceta.IdReceta);
+                    oReceta.Ingredientes = ManejadoraIngredientes.ObtieneIngredientesReceta(oReceta.IdReceta);
+                    oReceta.Categorias = ManejadoraCategorias.ObtieneCategoriasReceta(oReceta.IdReceta);
                 }
             }
             catch (Exception ex)
@@ -530,7 +529,14 @@ namespace DAL.Manejadoras
         }
 
         #endregion
+
         #region insert
+        /// <summary>
+        /// Crea una nueva receta completa, incluyendo pasos, ingredientes y categorías.
+        /// </summary>
+        /// <param name="receta"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static DTONuevaReceta InsertaRecetaCompleta(DTONuevaReceta receta)
         {
             using (SqlConnection miConexion = new SqlConnection(Conexion.CadenaConexion()))
@@ -617,7 +623,15 @@ namespace DAL.Manejadoras
                 }
             }
         }
+        #endregion
 
+        #region Borrado
+        /// <summary>
+        /// Borra una receta por su ID y verifica que el usuario que la borra es el creador de la misma.
+        /// </summary>
+        /// <param name="firebaseUID"></param>
+        /// <param name="idReceta"></param>
+        /// <exception cref="Exception"></exception>
         public static void BorrarRecetaPorIdYUid(string firebaseUID, int idReceta)
         {
             try
@@ -692,121 +706,7 @@ namespace DAL.Manejadoras
                 throw new Exception("Error general al borrar la receta: " + ex.Message, ex);
             }
         }
-
-
         #endregion
-
-        #region Métodos Auxiliares
-
-        public static List<PasoRecetaDTO> ObtienePasosReceta(int idReceta)
-        {
-            List<PasoRecetaDTO> pasoRecetas = new List<PasoRecetaDTO>();
-            try
-            {
-                using (SqlConnection miConexion = new SqlConnection(Conexion.CadenaConexion()))
-                {
-                    miConexion.Open();
-                    using (SqlCommand miComando = new SqlCommand("ObtenerPasosReceta", miConexion))
-                    {
-                        miComando.CommandType = CommandType.StoredProcedure;
-                        miComando.Parameters.AddWithValue("@p_idReceta", idReceta);
-
-                        using (SqlDataReader miLector = miComando.ExecuteReader())
-                        {
-                            while (miLector.Read())
-                            {
-                                PasoRecetaDTO oPaso = new PasoRecetaDTO
-                                {
-                                    Orden = (short)miLector["Orden"],
-                                    Descripcion = (string)miLector["Descripcion"]
-                                };
-                                pasoRecetas.Add(oPaso);
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al obtener los pasos de la receta", ex);
-            }
-            return pasoRecetas;
-        }
-
-        public static List<IngredienteRecetaDTO> ObtieneIngredientesReceta(int idReceta)
-        {
-            List<IngredienteRecetaDTO> ingredientesReceta = new List<IngredienteRecetaDTO>();
-            try
-            {
-                using (SqlConnection miConexion = new SqlConnection(Conexion.CadenaConexion()))
-                {
-                    miConexion.Open();
-                    using (SqlCommand miComando = new SqlCommand("ObtenerIngredientesReceta", miConexion))
-                    {
-                        miComando.CommandType = CommandType.StoredProcedure;
-                        miComando.Parameters.AddWithValue("@p_idReceta", idReceta);
-                        using (SqlDataReader miLector = miComando.ExecuteReader())
-                        {
-                            while (miLector.Read())
-                            {
-                                IngredienteRecetaDTO oIngrediente = new IngredienteRecetaDTO
-                                {
-                                    IdIngrediente = (int)miLector["idIngrediente"],
-                                    NombreIngrediente = (string)miLector["NombreIngrediente"],
-                                    Categoria = (string)miLector["Categoria"],
-                                    Medida = (string)miLector["Medida"],
-                                    Cantidad = (decimal)miLector["Cantidad"],
-                                    Notas = miLector["Notas"] as string ?? string.Empty,
-                                };
-                                ingredientesReceta.Add(oIngrediente);
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al obtener los ingredientes de la receta", ex);
-            }
-            return ingredientesReceta;
-        }
-
-        public static List<CategoriaRecetaDTO> ObtieneCategoriasReceta(int idReceta)
-        {
-            List<CategoriaRecetaDTO> categoriaRecetas = new List<CategoriaRecetaDTO>();
-            try
-            {
-                using (SqlConnection miConexion = new SqlConnection(Conexion.CadenaConexion()))
-                {
-                    miConexion.Open();
-                    using (SqlCommand miComando = new SqlCommand("ObtenerCategoriasReceta", miConexion))
-                    {
-                        miComando.CommandType = CommandType.StoredProcedure;
-                        miComando.Parameters.AddWithValue("@p_idReceta", idReceta);
-                        using (SqlDataReader miLector = miComando.ExecuteReader())
-                        {
-                            while (miLector.Read())
-                            {
-                                CategoriaRecetaDTO oCategoria = new CategoriaRecetaDTO
-                                {
-                                    IdCategoria = (int)miLector["idCategoria"],
-                                    NombreCategoria = (string)miLector["nombre"]
-                                };
-                                categoriaRecetas.Add(oCategoria);
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al obtener las categorías de la receta", ex);
-            }
-            return categoriaRecetas;
-        }
-
-
-
-        #endregion
+ 
     }
 }

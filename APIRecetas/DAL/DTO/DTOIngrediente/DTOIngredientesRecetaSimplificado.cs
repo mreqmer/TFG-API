@@ -4,16 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL.DTO
+namespace DAL.DTO.DTOIngrediente
 {
-    public class IngredienteRecetaDTO
+    public class DTOIngredientesRecetaSimplificado
     {
         #region Atributos
         private int idIngrediente;
-        private string nombreIngrediente;
-        private string categoria;
-        private string medida;
-        private decimal cantidad;
+        private double cantidad;
         private string notas;
         #endregion
 
@@ -24,25 +21,7 @@ namespace DAL.DTO
             set { idIngrediente = value; }
         }
 
-        public string NombreIngrediente
-        {
-            get { return nombreIngrediente; }
-            set { nombreIngrediente = value; }
-        }
-
-        public string Categoria
-        {
-            get { return categoria; }
-            set { categoria = value; }
-        }
-
-        public string Medida
-        {
-            get { return medida; }
-            set { medida = value; }
-        }
-
-        public decimal Cantidad
+        public double Cantidad
         {
             get { return cantidad; }
             set { cantidad = value; }
@@ -56,7 +35,7 @@ namespace DAL.DTO
         #endregion
 
         #region Constructores
-        public IngredienteRecetaDTO()
+        public DTOIngredientesRecetaSimplificado()
         {
         }
         #endregion

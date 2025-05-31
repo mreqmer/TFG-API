@@ -72,17 +72,6 @@ namespace ClasesRecetas
         public Receta()
         {
         }
-
-        public Receta(int idReceta, string nombreReceta, string descripcion, int? tiempoPreparacion, string dificultad, DateTime fechaCreacion, string fotoReceta)
-        {
-            this.idReceta = idReceta;
-            this.nombreReceta = nombreReceta;
-            this.descripcion = descripcion;
-            this.tiempoPreparacion = tiempoPreparacion;
-            this.dificultad = dificultad;
-            this.fechaCreacion = fechaCreacion;
-            this.fotoReceta = fotoReceta;
-        }
         #endregion
     }
 }

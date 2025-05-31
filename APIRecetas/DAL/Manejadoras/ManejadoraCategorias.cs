@@ -1,7 +1,9 @@
 ﻿using ClasesRecetas;
+using DAL.DTO.DTOCategoria;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -46,6 +48,40 @@ namespace DAL.Manejadoras
             }
 
             return listadoCategorias;
+        }
+
+        public static List<CategoriaRecetaDTO> ObtieneCategoriasReceta(int idReceta)
+        {
+            List<CategoriaRecetaDTO> categoriaRecetas = new List<CategoriaRecetaDTO>();
+            try
+            {
+                using (SqlConnection miConexion = new SqlConnection(Conexion.CadenaConexion()))
+                {
+                    miConexion.Open();
+                    using (SqlCommand miComando = new SqlCommand("ObtenerCategoriasReceta", miConexion))
+                    {
+                        miComando.CommandType = CommandType.StoredProcedure;
+                        miComando.Parameters.AddWithValue("@p_idReceta", idReceta);
+                        using (SqlDataReader miLector = miComando.ExecuteReader())
+                        {
+                            while (miLector.Read())
+                            {
+                                CategoriaRecetaDTO oCategoria = new CategoriaRecetaDTO
+                                {
+                                    IdCategoria = (int)miLector["idCategoria"],
+                                    NombreCategoria = (string)miLector["nombre"]
+                                };
+                                categoriaRecetas.Add(oCategoria);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener las categorías de la receta", ex);
+            }
+            return categoriaRecetas;
         }
 
     }
