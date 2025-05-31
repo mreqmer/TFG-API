@@ -45,13 +45,6 @@ namespace ClasesRecetas
         public Ingrediente()
         {
         }
-
-        public Ingrediente(int idIngrediente, string nombreIngrediente, string categoria, string medida)
-        {
-            this.idIngrediente = idIngrediente;
-            this.nombreIngrediente = nombreIngrediente;
-            this.medida = medida;
-        }
         #endregion
     }
 }

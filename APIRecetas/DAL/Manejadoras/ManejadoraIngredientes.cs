@@ -13,6 +13,11 @@ namespace DAL.Manejadoras
     public class ManejadoraIngredientes
     {
         #region listados
+        /// <summary>
+        /// Obtiene un listado de todos los ingredientes de la base de datos.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static List<Ingrediente> ObtieneListadoIngredientes()
         {
             SqlConnection miConexion = new SqlConnection();
@@ -52,6 +57,12 @@ namespace DAL.Manejadoras
             return listadoIngredientes;
         }
 
+        /// <summary>
+        /// Obtiene un listado de ingredientes que coinciden con la búsqueda por nombre.
+        /// </summary>
+        /// <param name="busquedaNombre"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static List<Ingrediente> ObtieneIngredienteBuscador(string busquedaNombre)
         {
             SqlConnection miConexion = new SqlConnection();
@@ -95,45 +106,12 @@ namespace DAL.Manejadoras
             return listadoIngredientes;
         }
 
-        public static List<Ingrediente> ObtieneListadoIngredientesCategorias(string categoria)
-        {
-            SqlConnection miConexion = new SqlConnection();
-            List<Ingrediente> listadoIngredientesCategorias = new List<Ingrediente>();
-            SqlCommand miComando = new SqlCommand();
-            SqlDataReader miLector;
-            Ingrediente oIngrediente;
-            miConexion.ConnectionString = Conexion.CadenaConexion();
-            try
-            {
-                miConexion.Open();
-                miComando.Parameters.AddWithValue("@categoria", categoria);
-                miComando.CommandText = "SELECT * FROM Ingredientes WHERE Categoria = @categoria";
-                miComando.Connection = miConexion;
-                miLector = miComando.ExecuteReader();
-                if (miLector.HasRows)
-                {
-                    while (miLector.Read())
-                    {
-                        oIngrediente = new Ingrediente();
-                        oIngrediente.IdIngrediente = (int)miLector["IdIngrediente"];
-                        oIngrediente.NombreIngrediente = (string)miLector["NombreIngrediente"];
-                        oIngrediente.Categoria = (string)miLector["Categoria"];
-                        oIngrediente.Medida = (string)miLector["Medida"];
-                        listadoIngredientesCategorias.Add(oIngrediente);
-                    }
-
-                }
-                miLector.Close();
-                miConexion.Close();
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al obtener el listado de ingredientes", ex);
-            }
-            return listadoIngredientesCategorias;
-        }
-
+        /// <summary>
+        /// Obtiene los ingredientes de una receta específica por su ID.
+        /// </summary>
+        /// <param name="idReceta"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static List<IngredienteRecetaDTO> ObtieneIngredientesReceta(int idReceta)
         {
             List<IngredienteRecetaDTO> ingredientesReceta = new List<IngredienteRecetaDTO>();
@@ -174,6 +152,12 @@ namespace DAL.Manejadoras
         #endregion
 
         #region objetos
+        /// <summary>
+        /// Obtiene un ingrediente específico por su ID.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static Ingrediente ObtieneIngrediente(int id)
         {
             SqlConnection miConexion = new SqlConnection();
