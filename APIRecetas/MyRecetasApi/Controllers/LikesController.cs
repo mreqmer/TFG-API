@@ -13,6 +13,11 @@ namespace MyRecetasApi.Controllers
     {
 
         //POST: api/Likes/toggle
+        /// <summary>
+        /// Le hace toggle a un like de una receta.
+        /// </summary>
+        /// <param name="like"></param>
+        /// <returns></returns>
         [HttpPost("toggle")]
         public IActionResult ToggleLike([FromBody] DTOLike like)
         {

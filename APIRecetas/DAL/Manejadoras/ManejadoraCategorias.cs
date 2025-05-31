@@ -12,7 +12,11 @@ namespace DAL.Manejadoras
 {
     public class ManejadoraCategorias
     {
-
+        /// <summary>
+        /// Obtiene un listado de todas las categorías disponibles en la base de datos.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static List<Categoria> ObtieneListadoCategorias()
         {
             SqlConnection miConexion = new SqlConnection();
@@ -50,6 +54,12 @@ namespace DAL.Manejadoras
             return listadoCategorias;
         }
 
+        /// <summary>
+        /// Obtiene las categorías asociadas a una receta específica mediante su ID.
+        /// </summary>
+        /// <param name="idReceta"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static List<CategoriaRecetaDTO> ObtieneCategoriasReceta(int idReceta)
         {
             List<CategoriaRecetaDTO> categoriaRecetas = new List<CategoriaRecetaDTO>();

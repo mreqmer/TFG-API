@@ -10,81 +10,12 @@ namespace DAL.Manejadoras
 {
     public class ManejadoraLikes
     {
-        //#region Insert
-
-        //public static bool AgregarLike(DTOLike like)
-        //{
-        //    bool estaAgregado = false;
-
-        //    try
-        //    {
-        //        string consultaExiste = "SELECT COUNT(*) FROM Likes WHERE IdReceta = @idReceta AND IdUsuario = @idUsuario";
-
-        //        using (SqlConnection conexion = new SqlConnection(Conexion.CadenaConexion()))
-        //        {
-        //            conexion.Open();
-
-        //            using (SqlCommand comandoExiste = new SqlCommand(consultaExiste, conexion))
-        //            {
-        //                comandoExiste.Parameters.AddWithValue("@idReceta", like.IdReceta);
-        //                comandoExiste.Parameters.AddWithValue("@idUsuario", like.IdUsuario);
-
-        //                int count = (int)comandoExiste.ExecuteScalar();
-
-        //                if (count == 0)
-        //                {
-        //                    string consultaInsertar = "INSERT INTO Likes (IdReceta, IdUsuario) VALUES (@idReceta, @idUsuario)";
-
-        //                    using (SqlCommand comandoInsertar = new SqlCommand(consultaInsertar, conexion))
-        //                    {
-        //                        comandoInsertar.Parameters.AddWithValue("@idReceta", like.IdReceta);
-        //                        comandoInsertar.Parameters.AddWithValue("@idUsuario", like.IdUsuario);
-
-        //                        int filasAfectadas = comandoInsertar.ExecuteNonQuery();
-        //                        estaAgregado = filasAfectadas > 0;
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new Exception("Error al agregar like", ex);
-        //    }
-
-        //    return estaAgregado;
-        //}
-
-        //#endregion
-
-        //#region Delete
-
-        //public static void EliminarLike(DTOLike like)
-        //{
-        //    try
-        //    {
-        //        using (SqlConnection miConexion = new SqlConnection(Conexion.CadenaConexion()))
-        //        {
-        //            miConexion.Open();
-
-        //            string query = "DELETE FROM Likes WHERE IdUsuario = @idUsuario AND IdReceta = @idReceta";
-
-        //            using (SqlCommand miComando = new SqlCommand(query, miConexion))
-        //            {
-        //                miComando.Parameters.AddWithValue("@idUsuario", like.IdUsuario);
-        //                miComando.Parameters.AddWithValue("@idReceta", like.IdReceta);
-        //                miComando.ExecuteNonQuery();
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new Exception("Error al eliminar like", ex);
-        //    }
-        //}
-
-        //#endregion
-
+        /// <summary>
+        /// Le hace toggle a un like de una receta. Si el like ya existe, lo elimina; si no, lo agrega.
+        /// </summary>
+        /// <param name="like"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static bool ToggleLike(DTOLike like)
         {
             bool estadoLike = false;
@@ -95,7 +26,6 @@ namespace DAL.Manejadoras
                 {
                     conexion.Open();
 
-                    // Comprobamos si existe el like usando JOIN con Usuarios para filtrar por FirebaseUID
                     string consultaExiste = @"
                             SELECT COUNT(*) 
                             FROM Likes l
@@ -130,7 +60,6 @@ namespace DAL.Manejadoras
                         else
                         {
                             // Si no existe, agregar el like
-                            // Para insertar necesitamos IdUsuario, así que primero lo buscamos
                             string consultaIdUsuario = "SELECT IdUsuario FROM Usuarios WHERE FirebaseUID = @uid";
 
                             int idUsuario;
@@ -155,7 +84,7 @@ namespace DAL.Manejadoras
                                 comandoInsertar.ExecuteNonQuery();
                             }
 
-                            estadoLike = true; // Se agregó el like
+                            estadoLike = true;
                         }
                     }
                 }

@@ -8,10 +8,13 @@ namespace ClasesRecetas
 {
     public class Likes
     {
+        #region Atributos
         private int idLike;
         private int idReceta;
         private int idUsuario;
+        #endregion
 
+        #region Propuedades
         public int IdLike
         {
             get { return idLike; }
@@ -27,7 +30,10 @@ namespace ClasesRecetas
             get { return idUsuario; }
             set { idUsuario = value; }
         }
-        public Likes() { }
+        #endregion
 
+        #region Constructores
+        public Likes() { }
+        #endregion
     }
 }

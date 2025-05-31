@@ -32,12 +32,6 @@ namespace ClasesRecetas
         public Categoria()
         {
         }
-
-        public Categoria(int idCategoria, string nombre)
-        {
-            this.idCategoria = idCategoria;
-            this.nombreCategoria = nombre;
-        }
         #endregion
     }
 }
