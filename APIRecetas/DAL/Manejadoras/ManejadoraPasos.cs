@@ -11,7 +11,12 @@ namespace DAL.Manejadoras
 {
     public class ManejadoraPasos
     {
-
+        /// <summary>
+        /// Obtiene los pasos de una receta a partir de su ID.
+        /// </summary>
+        /// <param name="idReceta"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static List<PasoRecetaDTO> ObtienePasosReceta(int idReceta)
         {
             List<PasoRecetaDTO> pasoRecetas = new List<PasoRecetaDTO>();
