@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DAL.DTO.DTOIngrediente
 {
-    public class IngredienteRecetaDTO
+    public class DTOIngredienteReceta
     {
         #region Atributos
         private int idIngrediente;
@@ -56,7 +56,7 @@ namespace DAL.DTO.DTOIngrediente
         #endregion
 
         #region Constructores
-        public IngredienteRecetaDTO()
+        public DTOIngredienteReceta()
         {
         }
         #endregion

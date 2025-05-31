@@ -10,28 +10,28 @@ using System.Threading.Tasks;
 
 namespace DAL.DTO.DTOReceta
 {
-    public class RecetaDTO : RecetaUsuario
+    public class DTOReceta : RecetaUsuario
     {
         #region Atributos
-        private List<PasoRecetaDTO> pasos;
-        private List<IngredienteRecetaDTO> ingredientes;
-        private List<CategoriaRecetaDTO> categorias;
+        private List<DTOPasoReceta> pasos;
+        private List<DTOIngredienteReceta> ingredientes;
+        private List<DTOCategoriaReceta> categorias;
         #endregion
 
         #region Propiedades
-        public List<PasoRecetaDTO> Pasos
+        public List<DTOPasoReceta> Pasos
         {
             get { return pasos; }
             set { pasos = value; }
         }
 
-        public List<IngredienteRecetaDTO> Ingredientes
+        public List<DTOIngredienteReceta> Ingredientes
         {
             get { return ingredientes; }
             set { ingredientes = value; }
         }
 
-        public List<CategoriaRecetaDTO> Categorias
+        public List<DTOCategoriaReceta> Categorias
         {
             get { return categorias; }
             set { categorias = value; }
@@ -39,7 +39,7 @@ namespace DAL.DTO.DTOReceta
         #endregion
 
         #region Constructores
-        public RecetaDTO()
+        public DTOReceta()
         {
         }
         #endregion

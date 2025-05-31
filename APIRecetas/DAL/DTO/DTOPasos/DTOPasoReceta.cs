@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace DAL.DTO.DTOPasos
 {
 
-    public class PasoRecetaDTO
+    public class DTOPasoReceta
     {
         #region Atributos
         private short orden;
@@ -29,7 +29,7 @@ namespace DAL.DTO.DTOPasos
         #endregion
 
         #region Constructores
-        public PasoRecetaDTO()
+        public DTOPasoReceta()
         {
         }
         #endregion

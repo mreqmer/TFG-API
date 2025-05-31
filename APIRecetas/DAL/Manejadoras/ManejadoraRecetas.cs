@@ -361,9 +361,9 @@ namespace DAL.Manejadoras
         /// <param name="idReceta"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public static RecetaDTO ObtieneRecetaID(int idReceta)
+        public static DTOReceta ObtieneRecetaID(int idReceta)
         {
-            RecetaDTO oReceta = new RecetaDTO();
+            DTOReceta oReceta = new DTOReceta();
             try
             {
                 using (SqlConnection miConexion = new SqlConnection(Conexion.CadenaConexion()))
@@ -479,9 +479,9 @@ namespace DAL.Manejadoras
         /// <param name="nombreReceta"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public static RecetaDTO ObtieneRecetaNombre(string nombreReceta)
+        public static DTOReceta ObtieneRecetaNombre(string nombreReceta)
         {
-            RecetaDTO oReceta = new RecetaDTO();
+            DTOReceta oReceta = new DTOReceta();
             try
             {
                 using (SqlConnection miConexion = new SqlConnection(Conexion.CadenaConexion()))

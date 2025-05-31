@@ -8,9 +8,12 @@ namespace DAL.DTO.DTOReceta
 {
     public class DTOGetRecetaDetalladaLike
     {
+        #region Atributos
         private int idReceta;
         private string uid;
+        #endregion
 
+        #region Propiedades
         public int IdReceta
         {
             get { return idReceta; }
@@ -21,9 +24,12 @@ namespace DAL.DTO.DTOReceta
             get { return uid; }
             set { uid = value; }
         }
+        #endregion
 
+        #region Constructores
         public DTOGetRecetaDetalladaLike()
         {
         }
+        #endregion
     }
 }

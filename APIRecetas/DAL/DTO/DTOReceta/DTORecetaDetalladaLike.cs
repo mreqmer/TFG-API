@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DAL.DTO.DTOReceta
 {
-    public class DTORecetaDetalladaLike : RecetaDTO
+    public class DTORecetaDetalladaLike : DTOReceta
     {
         #region Atributos
         private bool tieneLike;

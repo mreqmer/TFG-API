@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DAL.DTO.DTOCategoria
 {
-    public class CategoriaRecetaDTO
+    public class DTOCategoriaReceta
     {
         #region Atributos
         private int idCategoria;
@@ -29,11 +29,11 @@ namespace DAL.DTO.DTOCategoria
         #endregion
 
         #region Constructores
-        public CategoriaRecetaDTO()
+        public DTOCategoriaReceta()
         {
         }
 
-        public CategoriaRecetaDTO(int idCategoria, string nombreCategoria)
+        public DTOCategoriaReceta(int idCategoria, string nombreCategoria)
         {
             this.idCategoria = idCategoria;
             this.nombreCategoria = nombreCategoria;

@@ -13,13 +13,13 @@ namespace DAL.DTO.DTOReceta
     public class DTONuevaReceta : Receta
     {
         #region Atributos
-        private List<PasoRecetaDTO> pasos;
+        private List<DTOPasoReceta> pasos;
         private List<DTOIngredientesRecetaSimplificado> ingredientes;
         private List<DTOCategoriaRecetaSimplificada> categorias;
         #endregion
 
         #region Propiedades
-        public List<PasoRecetaDTO> Pasos
+        public List<DTOPasoReceta> Pasos
         {
             get { return pasos; }
             set { pasos = value; }

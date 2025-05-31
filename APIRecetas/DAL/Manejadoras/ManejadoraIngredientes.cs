@@ -112,9 +112,9 @@ namespace DAL.Manejadoras
         /// <param name="idReceta"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public static List<IngredienteRecetaDTO> ObtieneIngredientesReceta(int idReceta)
+        public static List<DTOIngredienteReceta> ObtieneIngredientesReceta(int idReceta)
         {
-            List<IngredienteRecetaDTO> ingredientesReceta = new List<IngredienteRecetaDTO>();
+            List<DTOIngredienteReceta> ingredientesReceta = new List<DTOIngredienteReceta>();
             try
             {
                 using (SqlConnection miConexion = new SqlConnection(Conexion.CadenaConexion()))
@@ -128,7 +128,7 @@ namespace DAL.Manejadoras
                         {
                             while (miLector.Read())
                             {
-                                IngredienteRecetaDTO oIngrediente = new IngredienteRecetaDTO
+                                DTOIngredienteReceta oIngrediente = new DTOIngredienteReceta
                                 {
                                     IdIngrediente = (int)miLector["idIngrediente"],
                                     NombreIngrediente = (string)miLector["NombreIngrediente"],

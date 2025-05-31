@@ -48,7 +48,7 @@ namespace MyRecetasApi.Controllers
         {
             try
             {
-                RecetaDTO receta = ManejadoraRecetas.ObtieneRecetaID(idReceta);
+                DTOReceta receta = ManejadoraRecetas.ObtieneRecetaID(idReceta);
 
                 if (receta == null)
                 {
@@ -93,7 +93,7 @@ namespace MyRecetasApi.Controllers
         {
             try
             {
-                RecetaDTO receta = ManejadoraRecetas.ObtieneRecetaNombre(NombreReceta);
+                DTOReceta receta = ManejadoraRecetas.ObtieneRecetaNombre(NombreReceta);
 
                 if (receta == null)
                 {
