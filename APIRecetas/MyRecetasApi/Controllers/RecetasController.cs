@@ -224,6 +224,21 @@ namespace MyRecetasApi.Controllers
             }
         }
 
+        [HttpDelete("Borrar")]
+        public IActionResult DeleteReceta([FromQuery] string uid, [FromQuery] int idReceta)
+        {
+            try
+            {
+                ManejadoraRecetas.BorrarRecetaPorIdYUid(uid, idReceta);
+
+                return Ok(new { message = "Receta eliminada correctamente." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
         // GET: api/<Recetas>/nombre/{NombreReceta}
         [HttpGet("nombre/{NombreReceta}")]
         public IActionResult GetRecetaByName(string NombreReceta)

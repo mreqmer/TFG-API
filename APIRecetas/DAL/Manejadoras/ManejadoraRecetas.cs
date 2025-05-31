@@ -618,6 +618,82 @@ namespace DAL.Manejadoras
             }
         }
 
+        public static void BorrarRecetaPorIdYUid(string firebaseUID, int idReceta)
+        {
+            try
+            {
+                using (SqlConnection miConexion = new SqlConnection(Conexion.CadenaConexion()))
+                {
+                    miConexion.Open();
+
+                    // 1. Verificación de propiedad
+                    string queryVerificacion = @"
+                SELECT r.IdReceta
+                FROM Recetas r
+                INNER JOIN Usuarios u ON r.IdCreador = u.IdUsuario
+                WHERE r.IdReceta = @idReceta AND u.FirebaseUID = @firebaseUID";
+
+                    using (SqlCommand cmdVerificar = new SqlCommand(queryVerificacion, miConexion))
+                    {
+                        cmdVerificar.Parameters.AddWithValue("@idReceta", idReceta);
+                        cmdVerificar.Parameters.AddWithValue("@firebaseUID", firebaseUID);
+
+                        object resultado = cmdVerificar.ExecuteScalar();
+
+                        if (resultado == null)
+                        {
+                            throw new Exception($"No se encontró la receta con Id {idReceta} perteneciente al usuario con UID '{firebaseUID}'.");
+                        }
+                    }
+
+                    // 2. Eliminación en orden con transacción
+                    using (SqlTransaction transaccion = miConexion.BeginTransaction())
+                    {
+                        try
+                        {
+                            using (SqlCommand cmd = miConexion.CreateCommand())
+                            {
+                                cmd.Transaction = transaccion;
+                                cmd.Parameters.AddWithValue("@idReceta", idReceta);
+
+                                cmd.CommandText = "DELETE FROM Likes WHERE IdReceta = @idReceta";
+                                int likesEliminados = cmd.ExecuteNonQuery();
+
+                                cmd.CommandText = "DELETE FROM PasosReceta WHERE IdReceta = @idReceta";
+                                int pasosEliminados = cmd.ExecuteNonQuery();
+
+                                cmd.CommandText = "DELETE FROM Receta_Ingredientes WHERE IdReceta = @idReceta";
+                                int ingredientesEliminados = cmd.ExecuteNonQuery();
+
+                                cmd.CommandText = "DELETE FROM RecetaCategoria WHERE IdReceta = @idReceta";
+                                int categoriasEliminadas = cmd.ExecuteNonQuery();
+
+                                cmd.CommandText = "DELETE FROM Recetas WHERE IdReceta = @idReceta";
+                                int recetasEliminadas = cmd.ExecuteNonQuery();
+
+                                if (recetasEliminadas == 0)
+                                {
+                                    throw new Exception("No se pudo eliminar la receta principal. Puede que ya no exista.");
+                                }
+
+                                transaccion.Commit();
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            transaccion.Rollback();
+                            throw new Exception("Error durante la transacción de borrado: " + e.Message, e);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error general al borrar la receta: " + ex.Message, ex);
+            }
+        }
+
+
         #endregion
 
         #region Métodos Auxiliares
