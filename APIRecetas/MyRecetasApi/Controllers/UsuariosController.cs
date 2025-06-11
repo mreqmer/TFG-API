@@ -71,37 +71,35 @@ namespace MyRecetasApi.Controllers
             }
         }
 
-    //    // PUT: api/Usuarios/Editar/{firebaseUID}
-    //    /// <summary>
-    //    /// Actualiza la información de un usuario existente por su Firebase UID.
-    //    /// </summary>
-    //    /// <param name="firebaseUID"></param>
-    //    /// <param name="usuarioEditado"></param>
-    //    /// <returns></returns>
-    //    [HttpPut("Editar/{firebaseUID}")]
-    //    public IActionResult EditarUsuario(string firebaseUID, [FromBody] DTOUpdateUsuario usuarioEditado)
-    //    {
-    //        try
-    //        {
-    //            if (string.IsNullOrEmpty(usuarioEditado.NombreUsuario) || string.IsNullOrEmpty(usuarioEditado.CorreoElectronico))
-    //            {
-    //                return BadRequest(new { message = "Debe proporcionar un nombre de usuario y un correo electrónico válidos." });
-    //            }
+        /// <summary>
+        /// Actualiza la información de un usuario existente por su UID.
+        /// </summary>
+        /// <param name="usuarioUpdate"></param>
+        /// <returns></returns>
+        [HttpPut("Update")]
+        public IActionResult UpdateUsuario([FromBody] DTOUpdateUsuario usuarioUpdate)
+        {
+            if (usuarioUpdate == null || string.IsNullOrEmpty(usuarioUpdate.UID))
+            {
+                return BadRequest("Datos inválidos o UID no especificado.");
+            }
 
-    //            bool actualizado = ManejadoraUsuarios.ActualizarUsuario(firebaseUID, usuarioEditado);
+            try
+            {
+                var usuarioActualizado = ManejadoraUsuarios.UpdateUsuarioPorUID(usuarioUpdate);
 
-    //            if (!actualizado)
-    //            {
-    //                return NotFound(new { message = "No se encontró un usuario con ese UID para actualizar." });
-    //            }
+                if (usuarioActualizado == null)
+                {
+                    return NotFound("Usuario no encontrado.");
+                }
 
-    //            return Ok(new { message = "Usuario actualizado correctamente." });
-    //        }
-    //        catch (Exception ex)
-    //        {
-    //            return StatusCode(StatusCodes.Status500InternalServerError,
-    //                new { message = "Error al actualizar el usuario.", error = ex.Message });
-    //        }
-    //    }
+                return Ok(usuarioActualizado);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error al actualizar usuario: {ex.Message}");
+            }
+        }
+
     }
 }

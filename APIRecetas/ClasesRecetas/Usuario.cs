@@ -14,6 +14,7 @@ namespace ClasesRecetas
         private string correoElectronico;
         private string nombreUsuario;  
         private DateTime fechaRegistro;
+        private string fotoPerfil;
         #endregion
 
         #region Propiedades
@@ -45,6 +46,12 @@ namespace ClasesRecetas
         {
             get { return fechaRegistro; }
             set { fechaRegistro = value; }
+        }
+
+        public string FotoPerfil
+        {
+            get { return fotoPerfil; }
+            set { fotoPerfil = value; }
         }
         #endregion
 

@@ -12,6 +12,7 @@ namespace DAL.DTO.DTOUsuario
         private string firebaseUID;
         private string nombreUsuario;
         private string correoElectronico;
+        private string fotoPerfil;
         #endregion
 
         #region Propiedades
@@ -32,6 +33,12 @@ namespace DAL.DTO.DTOUsuario
         {
             get { return correoElectronico; }
             set { correoElectronico = value; }
+        }
+
+        public string FotoPerfil
+        {
+            get { return fotoPerfil; }
+            set { fotoPerfil = value; }
         }
 
         #endregion

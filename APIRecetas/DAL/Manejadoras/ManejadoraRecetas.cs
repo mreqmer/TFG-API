@@ -559,7 +559,7 @@ namespace DAL.Manejadoras
                         miComando.Parameters.AddWithValue("@dificultad", receta.Dificultad);
                         miComando.Parameters.AddWithValue("@fechaCreacion", receta.FechaCreacion);
                         miComando.Parameters.AddWithValue("@fotoReceta", receta.FotoReceta);
-                        miComando.Parameters.AddWithValue("@idCreador", receta.IdCreador); // Aquí se usa directamente IdCreador
+                        miComando.Parameters.AddWithValue("@idCreador", receta.IdCreador);
 
                         idReceta = Convert.ToInt32(miComando.ExecuteScalar());
                     }
